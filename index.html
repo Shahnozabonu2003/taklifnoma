@@ -688,7 +688,7 @@
   </h2>
 
   <p class="wishes-subtitle">
-    <span class="t t-uz inline">Egalariga iliq tilaklaringizni qoldiring</span>
+    <span class="t t-uz inline">Iliq tilaklaringizni qoldiring</span>
     <span class="t t-ru inline">Оставьте свои тёплые пожелания</span>
     <span class="t t-en inline">Leave your warm wishes</span>
   </p>
@@ -786,32 +786,41 @@
   </div>
 </div>
 
-  <!-- WISH FORM -->
+ <!-- WISH FORM -->
 
-  <form class="wishes-form" id="wishesForm">
+<form class="wishes-form" id="wishesForm">
 
     <input
-      class="wishes-input"
-      type="text"
-      name="name"
-      placeholder="Ismingiz"
-      required
+        class="wishes-input"
+        type="text"
+        name="name"
+        placeholder="Ismingiz"
+        data-placeholder-uz="Ismingiz"
+        data-placeholder-ru="Ваше имя"
+        data-placeholder-en="Your name"
+        required
     >
 
     <textarea
-      class="wishes-textarea"
-      name="message"
-      placeholder="Tilagingizni yozing..."
-      required
+        class="wishes-textarea"
+        name="message"
+        placeholder="Tilagingizni yozing..."
+        data-placeholder-uz="Tilagingizni yozing..."
+        data-placeholder-ru="Оставьте своё пожелание..."
+        data-placeholder-en="Write your wish..."
+        required
     ></textarea>
 
-    <button class="wishes-submit" type="submit">
-     <span class="t t-uz inline">Tilakni yuborish</span>
-<span class="t t-ru inline">Отправить пожелание</span>
-<span class="t t-en inline">Send wish</span>
+    <button
+        class="wishes-submit"
+        type="submit"
+    >
+        <span class="t t-uz">Tilakni yuborish</span>
+        <span class="t t-ru">Отправить пожелание</span>
+        <span class="t t-en">Send wish</span>
     </button>
 
-  </form>
+</form>
 
 
   <!-- DIVIDER -->
@@ -885,14 +894,44 @@
   setInterval(updateCountdown, 1000);
 
   /* ---- language switch ---- */
-  const langButtons = document.querySelectorAll('.lang-switch button');
-  langButtons.forEach(btn => {
+
+const langButtons = document.querySelectorAll('.lang-switch button');
+function updatePlaceholders(language) {
+
+    document
+        .querySelectorAll('[data-placeholder-uz]')
+        .forEach(element => {
+
+            element.placeholder =
+                element.getAttribute(
+                    `data-placeholder-${language}`
+                );
+
+        });
+}
+
+langButtons.forEach(btn => {
+
     btn.addEventListener('click', () => {
-      document.body.setAttribute('data-lang', btn.dataset.setLang);
-      langButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+
+        const language = btn.dataset.setLang;
+
+        document.body.setAttribute(
+            'data-lang',
+            language
+        );
+
+        langButtons.forEach(b =>
+            b.classList.remove('active')
+        );
+
+        btn.classList.add('active');
+
+        updatePlaceholders(language);
+
     });
-  });
+
+});
 
   /* ---- background music ---- */
   const audio = document.getElementById('bgMusic');
