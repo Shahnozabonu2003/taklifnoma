@@ -855,7 +855,7 @@
     <img class="footer-bg" src="assets/hero.jpg" alt="">
     <div class="footer-veil"></div>
     <div class="footer-content">
-      <p class="footer-names">Jamshidbek &amp; Dilshodaxon</p>
+      <p class="footer-names">Dilshodaxon &amp; Jamshidbek</p>
       <p class="footer-date">
         <span class="t t-uz inline">5 oktabr, 2026</span><span class="t t-ru inline">5 октября 2026</span><span class="t t-en inline">October 5, 2026</span>
       </p>
@@ -956,6 +956,126 @@ if(wishesTrack){
       `translateX(-${wishIndex * 25}%)`;
 
   }, 3500);
+}
+// =========================
+// WISH → CLOUDFLARE → TELEGRAM
+// =========================
+
+const wishesForm = document.getElementById("wishesForm");
+
+const wishServer =
+    "https://dilshoda-wishes.shahnozabonusherqoziyeva.workers.dev/wish";
+
+if (wishesForm) {
+
+    wishesForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const nameInput =
+            wishesForm.querySelector('input[name="name"]');
+
+        const messageInput =
+            wishesForm.querySelector('textarea[name="message"]');
+
+        const button =
+            wishesForm.querySelector(".wishes-submit");
+
+        if (!nameInput || !messageInput || !button) {
+            console.error("Wish form elementlari topilmadi.");
+            return;
+        }
+
+        const nickname =
+            nameInput.value.trim();
+
+        const wish =
+            messageInput.value.trim();
+
+        if (!nickname) {
+            nameInput.focus();
+            return;
+        }
+
+        if (!wish) {
+            messageInput.focus();
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Yuborilmoqda...";
+
+        try {
+
+            const response = await fetch(
+                wishServer,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        nickname: nickname,
+                        wish: wish
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            console.log("Worker javobi:", data);
+
+            if (data.success) {
+
+                button.textContent = "Yuborildi ✓";
+
+                wishesForm.reset();
+
+                setTimeout(() => {
+
+                    button.textContent =
+                        "Tilakni yuborish";
+
+                    button.disabled = false;
+
+                }, 2000);
+
+            } else {
+
+                console.error(data);
+
+                button.textContent = "Xatolik";
+
+                setTimeout(() => {
+
+                    button.textContent =
+                        "Tilakni yuborish";
+
+                    button.disabled = false;
+
+                }, 2000);
+            }
+
+        } catch (error) {
+
+            console.error("WISH ERROR:", error);
+
+            button.textContent = "Xatolik";
+
+            setTimeout(() => {
+
+                button.textContent =
+                    "Tilakni yuborish";
+
+                button.disabled = false;
+
+            }, 2000);
+        }
+
+    });
+
 }
 </script>
 
